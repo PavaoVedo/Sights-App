@@ -4,8 +4,14 @@ import 'package:sights_app/presentation/core/style/extensions.dart';
 class CustomActionButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onPressed;
+  final String label;
 
-  const CustomActionButton({super.key, required this.onPressed, this.isLoading = false});
+  const CustomActionButton({
+    super.key,
+    required this.onPressed,
+    this.isLoading = false,
+    this.label = "Sign in",
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +33,9 @@ class CustomActionButton extends StatelessWidget {
         child: isLoading
             ? const CircularProgressIndicator(color: Colors.white)
             : Text(
-                "Sign in",
-                style: context.textButton,
-              ),
+          label,
+          style: context.textButton,
+        ),
       ),
     );
   }

@@ -22,4 +22,25 @@ class UserRepositoryImpl implements UserRepository {
       return Result.error(Exception("There was an error."));
     }
   }
+
+  @override
+  Future<Result<User>> signUp(String email, String password) async {
+    try {
+      final userCredential = await firebaseClient.signUp(email, password);
+      return Result.ok(userCredential.user!);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          return Result.error(Exception("An account already exists for that email."));
+        case 'invalid-email':
+          return Result.error(Exception("The email address is invalid."));
+        case 'weak-password':
+          return Result.error(Exception("The password is too weak."));
+        default:
+          return Result.error(Exception("Authentication internal error."));
+      }
+    } catch (e) {
+      return Result.error(Exception("There was an error."));
+    }
+  }
 }
