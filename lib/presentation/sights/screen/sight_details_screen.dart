@@ -1,35 +1,33 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sights_app/di.dart';
 import 'package:sights_app/domain/model/sight.dart';
 import 'package:sights_app/presentation/core/style/extensions.dart';
 import 'package:sights_app/presentation/core/widget/custom_action_button.dart';
 import 'package:sights_app/presentation/sights/widget/rating_stars.dart';
 
-class SightDetailsScreen extends StatefulWidget {
+class SightDetailsScreen extends ConsumerWidget {
   final Sight sight;
 
   const SightDetailsScreen({super.key, required this.sight});
 
   @override
-  State<SightDetailsScreen> createState() => _SightDetailsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(
+      favoritesNotifierProvider.select(
+            (favorites) => favorites.any((s) => s.id == sight.id),
+      ),
+    );
 
-class _SightDetailsScreenState extends State<SightDetailsScreen> {
-  // TODO(#3): replace this local flag with the favorites notifier (Hive).
-  bool _isFavorite = false;
-
-  Sight get sight => widget.sight;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildImageHeader(context),
+            _buildImageHeader(context, ref, isFavorite),
             const SizedBox(height: 30),
             Expanded(
               child: SingleChildScrollView(
@@ -58,7 +56,7 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
               padding: const EdgeInsets.all(20),
               child: CustomActionButton(
                 label: "Show on maps",
-                onPressed: _openInMaps,
+                onPressed: () => _openInMaps(),
               ),
             ),
           ],
@@ -67,7 +65,7 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
     );
   }
 
-  Widget _buildImageHeader(BuildContext context) {
+  Widget _buildImageHeader(BuildContext context, WidgetRef ref, bool isFavorite) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -111,7 +109,7 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
           bottom: -24,
           right: 36,
           child: GestureDetector(
-            onTap: () => setState(() => _isFavorite = !_isFavorite),
+            onTap: () => ref.read(favoritesNotifierProvider.notifier).toggle(sight),
             child: Container(
               width: 56,
               height: 56,
@@ -122,7 +120,7 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
                 ),
               ),
               child: Icon(
-                _isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
                 color: Colors.white,
                 size: 28,
               ),
@@ -159,7 +157,6 @@ class _SightDetailsScreenState extends State<SightDetailsScreen> {
     final lng = sight.lng;
     final label = Uri.encodeComponent(sight.title);
 
-    // Platform-specific: Apple Maps on iOS, geo: intent (default map app) on Android.
     final Uri uri = Platform.isIOS
         ? Uri.parse('https://maps.apple.com/?q=$label&ll=$lat,$lng')
         : Uri.parse('geo:$lat,$lng?q=$lat,$lng($label)');
