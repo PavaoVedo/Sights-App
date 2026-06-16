@@ -5,4 +5,10 @@ abstract interface class UserRepository {
   Future<Result<User>> signIn(final String email, final String password);
 
   Future<Result<User>> signUp(final String email, final String password);
+
+  User? getCurrentUser();
+
+  Future<void> signOut();
+
+  Future<Result<bool>> deactivateAccount();
 }

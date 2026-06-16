@@ -35,13 +35,16 @@ class SightCard extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                sight.imageUrl,
-                width: 135,
-                height: 100,
-                fit: BoxFit.cover,
+            Hero(
+              tag: 'sight-image-${sight.id}',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  sight.imageUrl,
+                  width: 135,
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(width: 10),
@@ -71,10 +74,16 @@ class SightCard extends ConsumerWidget {
             ),
             GestureDetector(
               onTap: () => ref.read(favoritesNotifierProvider.notifier).toggle(sight),
-              child: Icon(
-                isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                color: Colors.white,
-                size: 25,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: Icon(
+                  isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  key: ValueKey(isFavorite),
+                  color: Colors.white,
+                  size: 25,
+                ),
               ),
             ),
           ],

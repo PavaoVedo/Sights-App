@@ -71,26 +71,29 @@ class SightDetailsScreen extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(
-              sight.imageUrl,
-              height: 280,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Container(
-                  height: 280,
-                  color: Colors.black12,
-                  child: const Center(child: CircularProgressIndicator()),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) => Image.asset(
-                'assets/images/placeholder.jpg',
+          child: Hero(
+            tag: 'sight-image-${sight.id}',
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                sight.imageUrl,
                 height: 280,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(
+                    height: 280,
+                    color: Colors.black12,
+                    child: const Center(child: CircularProgressIndicator.adaptive()),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  'assets/images/placeholder.jpg',
+                  height: 280,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -119,10 +122,16 @@ class SightDetailsScreen extends ConsumerWidget {
                   colors: [context.colorGradientBegin, context.colorGradientEnd],
                 ),
               ),
-              child: Icon(
-                isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                color: Colors.white,
-                size: 28,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (child, animation) =>
+                    ScaleTransition(scale: animation, child: child),
+                child: Icon(
+                  isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  key: ValueKey(isFavorite),
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
             ),
           ),
@@ -157,15 +166,24 @@ class SightDetailsScreen extends ConsumerWidget {
     final lng = sight.lng;
     final label = Uri.encodeComponent(sight.title);
 
-    final Uri uri = Platform.isIOS
-        ? Uri.parse('https://maps.apple.com/?q=$label&ll=$lat,$lng')
-        : Uri.parse('geo:$lat,$lng?q=$lat,$lng($label)');
+    if (Platform.isIOS) {
 
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      final fallback = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
-      await launchUrl(fallback, mode: LaunchMode.externalApplication);
+      final googleMaps = Uri.parse('comgooglemaps://?q=$lat,$lng&center=$lat,$lng');
+      if (await canLaunchUrl(googleMaps)) {
+        await launchUrl(googleMaps);
+        return;
+      }
+      final appleMaps = Uri.parse('https://maps.apple.com/?q=$label&ll=$lat,$lng');
+      await launchUrl(appleMaps, mode: LaunchMode.externalApplication);
+      return;
     }
+
+    final geo = Uri.parse('geo:$lat,$lng?q=$lat,$lng($label)');
+    if (await canLaunchUrl(geo)) {
+      await launchUrl(geo, mode: LaunchMode.externalApplication);
+      return;
+    }
+    final fallback = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    await launchUrl(fallback, mode: LaunchMode.externalApplication);
   }
 }

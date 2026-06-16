@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sights_app/presentation/core/style/extensions.dart';
+import 'package:sights_app/presentation/core/widget/pressable_scale.dart';
 
 class CustomActionButton extends StatelessWidget {
   final bool isLoading;
@@ -15,27 +16,21 @@ class CustomActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      height: 55,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [context.colorGradientBegin, context.colorGradientEnd],
+    return PressableScale(
+      onTap: isLoading ? null : onPressed,
+      child: Container(
+        width: double.maxFinite,
+        height: 55,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [context.colorGradientBegin, context.colorGradientEnd],
+          ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        onPressed: onPressed,
         child: isLoading
             ? const CircularProgressIndicator(color: Colors.white)
-            : Text(
-          label,
-          style: context.textButton,
-        ),
+            : Text(label, style: context.textButton),
       ),
     );
   }

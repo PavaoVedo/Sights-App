@@ -20,6 +20,9 @@ import 'package:sights_app/presentation/auth/notifier/state/authentication_state
 import 'package:sights_app/presentation/sights/notifier/favorites_notifier.dart';
 import 'package:sights_app/presentation/sights/notifier/sight_list_notifier.dart';
 import 'package:sights_app/presentation/sights/notifier/state/sight_list_state.dart';
+import 'package:sights_app/domain/usecase/deactivate_account_use_case.dart';
+import 'package:sights_app/domain/usecase/get_current_user_use_case.dart';
+import 'package:sights_app/domain/usecase/sign_out_use_case.dart';
 
 // *************** CLIENT *************** //
 final firebaseAuthClientProvider = Provider<FirebaseAuthClient>((_) => FirebaseAuthClient());
@@ -61,6 +64,18 @@ final getFavoritesUseCaseProvider = Provider<GetFavoritesUseCase>(
 
 final toggleFavoriteUseCaseProvider = Provider<ToggleFavoriteUseCase>(
       (ref) => ToggleFavoriteUseCase(ref.watch(favoritesRepositoryProvider)),
+);
+
+final getCurrentUserUseCaseProvider = Provider<GetCurrentUserUseCase>(
+      (ref) => GetCurrentUserUseCase(ref.watch(userRepositoryProvider)),
+);
+
+final signOutUseCaseProvider = Provider<SignOutUseCase>(
+      (ref) => SignOutUseCase(ref.watch(userRepositoryProvider)),
+);
+
+final deactivateAccountUseCaseProvider = Provider<DeactivateAccountUseCase>(
+      (ref) => DeactivateAccountUseCase(ref.watch(userRepositoryProvider)),
 );
 
 // *************** NOTIFIER *************** //

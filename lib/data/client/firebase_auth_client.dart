@@ -16,4 +16,12 @@ class FirebaseAuthClient {
     );
     return userCredentials;
   }
+
+  User? getCurrentUser() => FirebaseAuth.instance.currentUser;
+
+  Future<void> signOut() => FirebaseAuth.instance.signOut();
+
+  Future<void> deleteAccount() async {
+    await FirebaseAuth.instance.currentUser?.delete();
+  }
 }

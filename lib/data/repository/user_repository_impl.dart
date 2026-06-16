@@ -43,4 +43,27 @@ class UserRepositoryImpl implements UserRepository {
       return Result.error(Exception("There was an error."));
     }
   }
+
+  @override
+  User? getCurrentUser() => firebaseClient.getCurrentUser();
+
+  @override
+  Future<void> signOut() => firebaseClient.signOut();
+
+  @override
+  Future<Result<bool>> deactivateAccount() async {
+    try {
+      await firebaseClient.deleteAccount();
+      return Result.ok(true);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        return Result.error(
+          Exception("Please sign in again before deactivating your account."),
+        );
+      }
+      return Result.error(Exception("Could not deactivate the account."));
+    } catch (e) {
+      return Result.error(Exception("There was an error."));
+    }
+  }
 }
