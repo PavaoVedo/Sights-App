@@ -23,6 +23,7 @@ import 'package:sights_app/presentation/sights/notifier/state/sight_list_state.d
 import 'package:sights_app/domain/usecase/deactivate_account_use_case.dart';
 import 'package:sights_app/domain/usecase/get_current_user_use_case.dart';
 import 'package:sights_app/domain/usecase/sign_out_use_case.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // *************** CLIENT *************** //
 final firebaseAuthClientProvider = Provider<FirebaseAuthClient>((_) => FirebaseAuthClient());
@@ -31,6 +32,10 @@ final dioProvider = Provider<Dio>((_) => Dio());
 final sightApiClientProvider = Provider<SightApiClient>((ref) => SightApiClient(ref.watch(dioProvider)));
 
 final favoritesLocalClientProvider = Provider<FavoritesLocalClient>((_) => FavoritesLocalClient());
+
+final authStateChangesProvider = StreamProvider<User?>(
+      (ref) => FirebaseAuth.instance.authStateChanges(),
+);
 
 // *************** REPOSITORY *************** //
 final userRepositoryProvider = Provider<UserRepository>(

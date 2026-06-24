@@ -10,6 +10,9 @@ class FavoritesNotifier extends Notifier<List<Sight>> {
 
   @override
   List<Sight> build() {
+
+    ref.watch(authStateChangesProvider);
+
     _getFavoritesUseCase = ref.watch(getFavoritesUseCaseProvider);
     _toggleFavoriteUseCase = ref.watch(toggleFavoriteUseCaseProvider);
     return _getFavoritesUseCase();
