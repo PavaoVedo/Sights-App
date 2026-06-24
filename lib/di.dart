@@ -42,7 +42,10 @@ final sightRepositoryProvider = Provider<SightRepository>(
 );
 
 final favoritesRepositoryProvider = Provider<FavoritesRepository>(
-      (ref) => FavoritesRepositoryImpl(ref.watch(favoritesLocalClientProvider)),
+      (ref) => FavoritesRepositoryImpl(
+    ref.watch(favoritesLocalClientProvider),
+    ref.watch(firebaseAuthClientProvider),
+  ),
 );
 
 // *************** USE CASE *************** //

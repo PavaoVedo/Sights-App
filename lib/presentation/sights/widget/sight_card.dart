@@ -44,6 +44,30 @@ class SightCard extends ConsumerWidget {
                   width: 135,
                   height: 100,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(
+                      width: 135,
+                      height: 100,
+                      color: Colors.white24,
+                      child: const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => Image.asset(
+                    'assets/images/placeholder.jpg',
+                    width: 135,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "73823062717",
-    "project_id": "sights-app-algebra-2025",
-    "storage_bucket": "sights-app-algebra-2025.firebasestorage.app"
+    "project_number": "202582918405",
+    "project_id": "sights-app-pavao",
+    "storage_bucket": "sights-app-pavao.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:73823062717:android:963af2773cad65106545d4",
+        "mobilesdk_app_id": "1:202582918405:android:286533350c1ac6610c236c",
         "android_client_info": {
           "package_name": "hr.algebra.sights_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCosG08aqbW3vJ0poyFWYiJnauTWgrsNSU"
+          "current_key": "AIzaSyCIfnDCeVkctMxDCtcpSYp-zC_0ONv_OSo"
         }
       ],
       "services": {
